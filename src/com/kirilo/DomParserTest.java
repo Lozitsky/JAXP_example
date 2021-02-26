@@ -6,19 +6,14 @@ import org.w3c.dom.Node;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ParsingTest {
+import static com.kirilo.XMLUtil.*;
+
+public class DomParserTest {
     public static void main(String[] args) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(false);
@@ -30,24 +25,19 @@ public class ParsingTest {
             DomParser parser = new DomParser(document);
             List<Node> nodes = parser.getAllNodes();
             showNameAndValue(nodes, parser);
-            parser.delAllNodes("date");
+            parser.delAllTags("date");
             prettyPrint(document);
 
-            parser.addNode("person","date", LocalDate.now().toString());
+            parser.addTag("person", "date", LocalDate.now().toString());
 //            document.normalize();
             prettyPrint(document);
+
+//            parser.getAllTagValuePairs().forEach((s, strings) -> System.out.println(s + " : " + strings));
+            parser.getAllTagValuePairs("people").forEach((s, strings) -> System.out.println(s + " : " + strings));
+            parser.getAllAttrValuePairs("person").forEach((s, strings) -> System.out.println(s + " : " + strings));
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void prettyPrint(Document xml) throws Exception {
-        Transformer tf = TransformerFactory.newInstance().newTransformer();
-        tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-        tf.setOutputProperty(OutputKeys.INDENT, "yes");
-        Writer out = new StringWriter();
-        tf.transform(new DOMSource(xml), new StreamResult(out));
-        System.out.println(out.toString());
     }
 
     private static void showNameAndValue(List<Node> nodes, DomParser parser) {

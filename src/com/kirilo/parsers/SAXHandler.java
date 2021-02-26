@@ -10,12 +10,12 @@ public class SAXHandler extends DefaultHandler {
 
     private Map<String, String> map;
     private List<String> list = new ArrayList<>();
+    private List<Map<String, String>> lists = new ArrayList<>();
+
 
     public List<Map<String, String>> getLists() {
         return lists;
     }
-
-    private List<Map<String, String>> lists = new ArrayList<>();
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -27,7 +27,7 @@ public class SAXHandler extends DefaultHandler {
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
-        String k = list.remove(list.size() - 1);
+        list.remove(list.size() - 1);
         if (qName.equals("person") || qName.equals("people")) {
             lists.add(map);
         }
